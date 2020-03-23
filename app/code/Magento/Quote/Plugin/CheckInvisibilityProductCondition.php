@@ -39,14 +39,17 @@ class CheckInvisibilityProductCondition
      */
     public function afterCheckData(AbstractItem $subject, AbstractItem $result)
     {
-        if ($subject->getProduct()->getVisibility() == Visibility::VISIBILITY_NOT_VISIBLE
+        $product = $subject->getProduct();
+        if ($product->getVisibility() == Visibility::VISIBILITY_NOT_VISIBLE
             && !$subject->getParentItem()
-            && count($this->groupType->getParentIdsByChild($subject->getProduct()->getId())) == 0
+            && count($this->groupType->getParentIdsByChild($product->getId())) == 0
         ) {
-            $result->setHasError(true)->setMessage(__('Product not available at the moment'));
+            $result->setHasError(true);
+            $result->setMessage(__('Product not available at the moment'));
             $result->getQuote()->setHasError(
                 true
-            )->addMessage(
+            );
+            $result->getQuote()->addMessage(
                 __('Some of the products not available at the moment.')
             );
         }
